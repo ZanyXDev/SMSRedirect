@@ -11,6 +11,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Read preference
+ * send sms to number
+ * enable/disable backup sms to gmail
+ * filter white,black,other
+ **/
 public class ProcessingSMS extends Service {
     private static final String DEBUG_TAG = "SMSREDIRECT";
     private static int MAX_THREAD_POOL = 3;
