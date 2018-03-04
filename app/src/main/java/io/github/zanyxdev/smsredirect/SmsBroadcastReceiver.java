@@ -15,7 +15,10 @@ import android.widget.Toast;
  */
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
+
     private static final String TAG = "SmsBroadcastReceiver";
+    public final static String PARAM_SMS_SENDER = "sms_sender";
+    public final static String PARAM_SMS_BODY = "sms_body";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -23,24 +26,22 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             String smsSender = "";
             String smsBody = "";
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    smsBody += smsMessage.getMessageBody();
-                }
-            }else{
-                // @Todo fix for API < 19
+            for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
+                smsBody += smsMessage.getMessageBody();
             }
 
-            Toast.makeText(context,
-                            "BroadcastReceiver caught conditional SMS: " + smsBody,
-                            Toast.LENGTH_LONG).show();
 
-/*            if (smsBody.startsWith(SmsHelper.SMS_CONDITION)) {
-                Log.d(TAG, "Sms with condition detected");
-                Toast.makeText(context, "BroadcastReceiver caught conditional SMS: " + smsBody, Toast.LENGTH_LONG).show();
-            }
+            /**
+             *
+             * Start service with @param PARAM_SMS_SENDER, @param PARAM_SMS_BODY
+             *
+             */
 
-*/
+            context.startService(new Intent(context,ProcessingSMS.class)
+                                        .putExtra(PARAM_SMS_SENDER,smsSender)
+                                        .putExtra(PARAM_SMS_BODY,smsBody)
+                                );
+
             Log.d(TAG, "SMS detected: From " + smsSender + " With text " + smsBody);
         }
     }
